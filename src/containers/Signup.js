@@ -5,7 +5,8 @@ import {
   Grid,
   Header,
   Message,
-  Segment
+  Segment, 
+  Select
 } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { NavLink, Redirect } from "react-router-dom";
@@ -88,6 +89,14 @@ class RegistrationForm extends React.Component {
                   placeholder="Confirm password"
                   type="password"
                 />
+          
+              <FormItem>
+                placeholder="userType"
+                <Select> 
+                  <Option>Student</Option>
+                  <Option>Teacher</Option>
+                </Select>
+               </FormItem>
 
                 <Button
                   color="teal"

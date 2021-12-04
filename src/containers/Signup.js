@@ -6,7 +6,8 @@ import {
   Header,
   Message,
   Segment, 
-  Select
+  Select,
+  Option
 } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { NavLink, Redirect } from "react-router-dom";
@@ -22,6 +23,8 @@ class RegistrationForm extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
+    let is_student = false;
+    // if (value.userType === "student") is_student = true;
     const { username, email, password1, password2 } = this.state;
     this.props.signup(username, email, password1, password2);
   };
@@ -91,11 +94,20 @@ class RegistrationForm extends React.Component {
                 />
           
               <FormItem>
-                placeholder="userType"
-                <Select> 
-                  <Option>Student</Option>
-                  <Option>Teacher</Option>
+                {getFieldDecorator("userType", {
+                  rules: [
+                    {
+                      required: true,
+                      message: "Please select user!"
+                    }
+                  ]
+                })(
+                  <Select placeholder="Select user type"> 
+                  <Option value="student">Student</Option>
+                  <Option value="teacher">Teacher</Option>
                 </Select>
+                )}
+                
                </FormItem>
 
                 <Button

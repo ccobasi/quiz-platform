@@ -1,4 +1,3 @@
-
 import React from "react";
 import Icon from '@ant-design/icons';
 import { Form, Input, Button, Select } from "antd";
@@ -13,6 +12,7 @@ class RegistrationForm extends React.Component {
   state = {
     confirmDirty: false
   };
+
 
   handleSubmit = e => {
     e.preventDefault();
@@ -55,44 +55,40 @@ class RegistrationForm extends React.Component {
   };
 
   render() {
-    const { getFieldDecorator } = this.props.form;
 
     return (
       <Form onSubmit={this.handleSubmit}>
-        <FormItem>
-          {getFieldDecorator("userName", {
-            rules: [{ required: true, message: "Please input your username!" }]
-          })(
+        <FormItem name="username" label="Username" style={{width:"400px"}} rules={[
+          
+          {
+            required:true,
+            message:"Please input your Username",
+          },
+          ]}>
             <Input
               prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
               placeholder="Username"
             />
-          )}
         </FormItem>
 
-        <FormItem>
-          {getFieldDecorator("email", {
-            rules: [
-              {
-                type: "email",
-                message: "The input is not valid E-mail!"
-              },
-              {
-                required: true,
-                message: "Please input your E-mail!"
-              }
-            ]
-          })(
+        <FormItem name="email" label="Email" style={{width:"400px"}} rules={[
+          {
+            type:"email",
+            message:"The input is not valid Email",
+          },
+          {
+            required:true,
+            message:"Please input your Email!",
+          },
+          ]}>
             <Input
               prefix={<Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />}
               placeholder="Email"
             />
-          )}
         </FormItem>
 
-        <FormItem>
-          {getFieldDecorator("password", {
-            rules: [
+        <FormItem name="password" label="Password" style={{width:"400px"}} hasFeedback
+          rules= {[
               {
                 required: true,
                 message: "Please input your password!"
@@ -100,19 +96,16 @@ class RegistrationForm extends React.Component {
               {
                 validator: this.validateToNextPassword
               }
-            ]
-          })(
+            ]}>
             <Input
               prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
               type="password"
               placeholder="Password"
             />
-          )}
         </FormItem>
 
-        <FormItem>
-          {getFieldDecorator("confirm", {
-            rules: [
+        <FormItem name="confirm" label="Password" style={{width:"400px"}} hasFeedback
+          rules= {[
               {
                 required: true,
                 message: "Please confirm your password!"
@@ -120,31 +113,25 @@ class RegistrationForm extends React.Component {
               {
                 validator: this.compareToFirstPassword
               }
-            ]
-          })(
+            ]}>
             <Input
               prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
               type="password"
               placeholder="Password"
               onBlur={this.handleConfirmBlur}
             />
-          )}
         </FormItem>
 
-        <FormItem>
-          {getFieldDecorator("userType", {
-            rules: [
-              {
-                required: true,
-                message: "Please select a user!"
-              }
-            ]
-          })(
+        <FormItem name="userType" label="UserType" style={{width:"400px"}} rules={[
+          {
+            required:true,
+            message:"Please select a user!"
+          },
+          ]}>
             <Select placeholder="Select a user type">
               <Option value="student">Student</Option>
               <Option value="teacher">Teacher</Option>
             </Select>
-          )}
         </FormItem>
 
         <FormItem>
@@ -164,8 +151,6 @@ class RegistrationForm extends React.Component {
     );
   }
 }
-
-// const WrappedRegistrationForm = Form.create()(RegistrationForm);
 
 const mapStateToProps = state => {
   return {

@@ -1,140 +1,94 @@
 import React from "react";
-import Icon from '@ant-design/icons';
+import {UserOutlined,MailOutlined,LockOutlined} from '@ant-design/icons';
 import { Form, Input, Button, Select } from "antd";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import * as actions from "../store/actions/auth";
+import Cascader from "rc-cascader";
 
-const FormItem = Form.Item;
-const Option = Select.Option;
+const {Option} = Select;
 
-class RegistrationForm extends React.Component {
+const RegistrationForm = () => {
   state = {
     confirmDirty: false
   };
+  
+  const [form] = Form.useForm();
+  const userType = [
+    {
+      value:"student",
+      label:"Student",
+    },
+    {
+      value:"teacher",
+      label:"Teacher",
+    },
+  ]
 
-
-  handleSubmit = e => {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        let is_student = false;
-        if (values.userType === "student") is_student = true;
-        this.props.onAuth(
-          values.userName,
-          values.email,
-          values.password,
-          values.confirm,
-          is_student
-        );
-        // this.props.history.push("/");
-      }
-    });
-  };
-
-  handleConfirmBlur = e => {
-    const value = e.target.value;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
-  };
-
-  compareToFirstPassword = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value && value !== form.getFieldValue("password")) {
-      callback("Two passwords that you enter is inconsistent!");
-    } else {
-      callback();
-    }
-  };
-
-  validateToNextPassword = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value && this.state.confirmDirty) {
-      form.validateFields(["confirm"], { force: true });
-    }
-    callback();
-  };
-
-  render() {
-
-    return (
-      <Form onSubmit={this.handleSubmit}>
-        <FormItem name="username" label="Username" style={{width:"400px"}} rules={[
-          
+  const onFinish = () => {
+    <Form form={form} name="register" onFinish={onFinish} scrollToFirstError>
+        <Form.Item name="userName" style={{width:"400px"}} rules={[
           {
             required:true,
             message:"Please input your Username",
           },
           ]}>
             <Input
-              prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
+              prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }}/>}
               placeholder="Username"
             />
-        </FormItem>
-
-        <FormItem name="email" label="Email" style={{width:"400px"}} rules={[
+        </Form.Item>
+        <Form.Item name="email" label="Email" style={{width:"400px"}} rules={[
           {
             type:"email",
             message:"The input is not valid Email",
           },
           {
             required:true,
-            message:"Please input your Email!",
+            message:"Please input your Email",
           },
           ]}>
             <Input
-              prefix={<Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />}
+              prefix={<MailOutlined style={{ color: "rgba(0,0,0,.25)" }}/>}
               placeholder="Email"
             />
-        </FormItem>
-
-        <FormItem name="password" label="Password" style={{width:"400px"}} hasFeedback
-          rules= {[
-              {
-                required: true,
-                message: "Please input your password!"
-              },
-              {
-                validator: this.validateToNextPassword
-              }
-            ]}>
-            <Input
-              prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
-              type="password"
-              placeholder="Password"
-            />
-        </FormItem>
-
-        <FormItem name="confirm" label="Password" style={{width:"400px"}} hasFeedback
-          rules= {[
-              {
-                required: true,
-                message: "Please confirm your password!"
-              },
-              {
-                validator: this.compareToFirstPassword
-              }
-            ]}>
-            <Input
-              prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
-              type="password"
-              placeholder="Password"
-              onBlur={this.handleConfirmBlur}
-            />
-        </FormItem>
-
-        <FormItem name="userType" label="UserType" style={{width:"400px"}} rules={[
+        </Form.Item>
+        <Form.Item name="password" label="Password" style={{width:"400px"}} rules={[
           {
             required:true,
-            message:"Please select a user!"
+            message:"Please input your password",
           },
-          ]}>
-            <Select placeholder="Select a user type">
-              <Option value="student">Student</Option>
-              <Option value="teacher">Teacher</Option>
-            </Select>
-        </FormItem>
-
-        <FormItem>
+          ]} hasFeedback>
+            <Input.password
+              prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }}/>}
+              placeholder="password"
+            />
+        </Form.Item>
+        <Form.Item name="confirm" label="Confirm Password" dependencies={["password"]} style={{width:"400px"}} rules={[
+          {
+            required:true,
+            message:"Please confirm your password",
+          },
+          ({getFieldValue}) => ({
+            validator(_,value){
+              if(!value || getFieldValue("password") === value){
+                return Promise.resolve();
+              }
+              return Promise.reject("The two passwords that you entered do not match");
+            }
+            
+          })
+          ]} hasFeedback>
+            <Input.password
+              prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }}/>}
+              placeholder="password"
+            />
+        </Form.Item>
+        <Form.Item name="userType" label="User Type" style={{width:"250px",marginLeft:"45px"}} >
+            <Cascader options={userType} style={{marginLeft:"5px"}}
+            />
+        </Form.Item>
+        <Form.Item>
           <Button
             type="primary"
             htmlType="submit"
@@ -146,10 +100,9 @@ class RegistrationForm extends React.Component {
           <NavLink style={{ marginRight: "10px" }} to="/login/">
             login
           </NavLink>
-        </FormItem>
-      </Form>
-    );
-  }
+        </Form.Item>
+        </Form >
+  };
 }
 
 const mapStateToProps = state => {
